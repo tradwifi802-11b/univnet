@@ -39,7 +39,34 @@ def save_mel_image(mel_tensor, save_path):
     plt.savefig(save_path)
     plt.close()
 
-for filepath in tqdm.tqdm(glob.glob(os.path.join(INPUT_FOLDER, '*'))):
+# for filepath in tqdm.tqdm(glob.glob(os.path.join(INPUT_FOLDER, '*'))):
+#     filename = os.path.basename(filepath)
+#     name, ext = os.path.splitext(filename)
+#     ext = ext.lower()
+
+#     # mp3 to wav conversion
+#     if ext == '.mp3':
+#         wav_path = os.path.join(INPUT_FOLDER, f'{name}.wav')
+#         convert_mp3_to_wav(filepath, wav_path)
+#     elif ext == '.wav':
+#         wav_path = filepath
+#     else:
+#         print(f"Skipping unsupported file format: {filename}")
+#         continue
+
+#     try:
+#         mel_tensor = compute_mel(wav_path)
+#         mel_save_path = os.path.join(OUTPUT_FOLDER, f'{name}.mel')
+#         torch.save(mel_tensor, mel_save_path)
+
+#         # Save mel image
+#         image_save_path = os.path.join(IMAGE_FOLDER, f'{name}_mel.png')
+#         save_mel_image(mel_tensor, image_save_path)
+
+#     except Exception as e:
+#         print(f"Failed to process {filename}: {e}")
+
+def process_file(filepath):
     filename = os.path.basename(filepath)
     name, ext = os.path.splitext(filename)
     ext = ext.lower()
@@ -52,16 +79,21 @@ for filepath in tqdm.tqdm(glob.glob(os.path.join(INPUT_FOLDER, '*'))):
         wav_path = filepath
     else:
         print(f"Skipping unsupported file format: {filename}")
-        continue
+        return
 
     try:
         mel_tensor = compute_mel(wav_path)
         mel_save_path = os.path.join(OUTPUT_FOLDER, f'{name}.mel')
         torch.save(mel_tensor, mel_save_path)
 
-        # Save mel image
         image_save_path = os.path.join(IMAGE_FOLDER, f'{name}_mel.png')
         save_mel_image(mel_tensor, image_save_path)
 
+        print(f"Processed: {filename}")
+
     except Exception as e:
         print(f"Failed to process {filename}: {e}")
+
+
+# for filepath in tqdm.tqdm(glob.glob(os.path.join(INPUT_FOLDER, '*'))):
+#     process_file(filepath)
